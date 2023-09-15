@@ -46,6 +46,10 @@ def generate(path):
         prompt_path = "Meta/Logline"
         prompt = "Please generate an elevator pitch based on the following logline: "
 
+    if path == "Meta/Synopsis 800 words":
+        prompt_path = "Meta/Elevator Pitch"
+        prompt = "Please generate a Synopsis with between 600 and 800 words based on the following elevator pitch: "
+
     if load_file:
         filename = "data/" + prompt_path.replace("/", "_") + ".txt"
         if not os.path.exists(filename):

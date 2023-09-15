@@ -24,7 +24,7 @@ $(function () {
 let setClick=(id, callback)=>document.getElementById(id).addEventListener("click", callback);
 let setInputChange = (id, callback) => document.getElementById(id).addEventListener("input", callback);
 
-setInputChange("text-area-main", () => {
+function save_text_area() {
     var myprompt = document.getElementById("text-area-main").value;
     let path = getSelectedTreePath();
     if( path === "" ) {
@@ -35,9 +35,16 @@ setInputChange("text-area-main", () => {
     callSave(path, myprompt, (data) => {
         console.log(data);
     });
+}
+
+setInputChange("text-area-main", () => {save_text_area()});
+
+setClick("reformat", ()=>{
+    document.getElementById("text-area-main").value = document.getElementById("text-area-main").value.replace(/\./g, '.\r\n');
+    save_text_area();
 });
 
-setClick("gen", ()=>{
+setClick("generate", ()=>{
     let path = getSelectedTreePath();
     if( path === "" ) {
         alert("Please select a tree node.");
@@ -46,10 +53,10 @@ setClick("gen", ()=>{
     console.log(path);
     // https://kilianvalkhof.com/2010/css-html/css3-loading-spinners-without-images/
     // https://stephanwagner.me/only-css-loading-spinner
-    $('#rewrite').addClass('spinner');
+    $('#generate').addClass('spinner');
     callGenerate(path, (data)=>{
         document.getElementById("text-area-main").value = data;
-        $('#rewrite').removeClass('spinner');
+        $('#generate').removeClass('spinner');
     })
 });
 
