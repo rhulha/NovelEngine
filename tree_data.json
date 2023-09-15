@@ -1,0 +1,68 @@
+[
+    {
+        "text": "Meta",
+        "children": [
+            {
+                "text": "Logline"
+            },
+            {
+                "text": "Elevator Pitch"
+            },
+            {
+                "text": "Synopsis 800 words"
+            },
+            {
+                "text": "Chapters Outline"
+            }
+        ]
+    },
+    {
+        "text": "Characters",
+        "children": [
+            {
+                "text": "Eva"
+            },
+            {
+                "text": "Tom"
+            }
+        ]
+    },
+    {
+        "text": "Chapters",
+        "children": [
+            {
+                "text": "Chapter 1",
+                "children": [
+                    {
+                        "text": "Beats"
+                    },
+                    {
+                        "text": "Prose"
+                    }
+                ]
+            },
+            {
+                "text": "Chapter 2",
+                "children": [
+                    {
+                        "text": "Beats"
+                    },
+                    {
+                        "text": "Prose"
+                    }
+                ]
+            },
+            {
+                "text": "Chapter 3",
+                "children": [
+                    {
+                        "text": "Beats"
+                    },
+                    {
+                        "text": "Prose"
+                    }
+                ]
+            }
+        ]
+    }
+]
