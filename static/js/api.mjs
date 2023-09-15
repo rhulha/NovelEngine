@@ -85,14 +85,14 @@ export function callLoad(treePath, callback) {
 
 }
 
-export function callGenerate(prompt, callback) {
+export function callGenerate(treePath, callback) {
     const requestOptions = {
         method: 'POST',
         headers: textPlainHeaders,
         body: prompt,
     };
 
-    fetch('./api/generate', requestOptions)
+    fetch('./api/generate/'+treePath, requestOptions)
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');

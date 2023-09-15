@@ -38,11 +38,18 @@ setInputChange("text-area-main", () => {
 });
 
 setClick("gen", ()=>{
-    var myprompt = document.getElementById("text-area-main").value;
-    //myprompt = myprompt.replace(/[^a-zA-Z0-9\\., ]/g, "");
-    console.log(myprompt);
-    callGenerate(myprompt, (data)=>{
+    let path = getSelectedTreePath();
+    if( path === "" ) {
+        alert("Please select a tree node.");
+        return;
+    }
+    console.log(path);
+    // https://kilianvalkhof.com/2010/css-html/css3-loading-spinners-without-images/
+    // https://stephanwagner.me/only-css-loading-spinner
+    $('#rewrite').addClass('spinner');
+    callGenerate(path, (data)=>{
         document.getElementById("text-area-main").value = data;
+        $('#rewrite').removeClass('spinner');
     })
 });
 
