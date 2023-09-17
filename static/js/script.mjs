@@ -1,47 +1,38 @@
-import {callSave, callLoad, callGenerate, getTreeData, getSelectedTreePath} from './api.mjs';
+import {setClick, setInputChange, callLoad, saveTextArea, setupTreeNodeClickEvent, callGenerate, getTreeData, getSelectedTreePath} from './api.mjs';
 
 $(function () {
     getTreeData();
-    $('#tree').on('select_node.jstree', function (e, data) {
-        let path = data.node.text;
-        let pointer = data.node;
-        while(true) {
-            if (pointer.parent === "#") {
-                break;
-            }
-            pointer = data.instance.get_node(pointer.parent);
-            path = pointer.text + "/" + path;
+    setupTreeNodeClickEvent();
+    setInputChange("text-area-main", () => {saveTextArea()});
 
-        }
-        console.log(  path );
+    let oak = document.getElementById("openai_api_key").value;
 
-        callLoad(path, (data) => {
-            document.getElementById("text-area-main").value = data;
-        });
-    });
+    if( oak === "" ) {
+        document.getElementById("openai_api_key").value = localStorage.getItem("openai_api_key");
+    }
+
 });
 
-let setClick=(id, callback)=>document.getElementById(id).addEventListener("click", callback);
-let setInputChange = (id, callback) => document.getElementById(id).addEventListener("input", callback);
+setClick("reformat", ()=>{
+    let text = document.getElementById("text-area-main").value;
+    text = text.replace(/\./g, '.\r\n');
+    text = text.replace(/^"|"$/g, '');
+    document.getElementById("text-area-main").value = text;
+    saveTextArea();
+});
 
-function save_text_area() {
-    var myprompt = document.getElementById("text-area-main").value;
+setClick("save_api_key", ()=>localStorage.setItem("openai_api_key", document.getElementById("openai_api_key").value));
+
+setClick("reset", ()=>{
     let path = getSelectedTreePath();
     if( path === "" ) {
         alert("Please select a tree node.");
         return;
     }
-    console.log(path, myprompt);
-    callSave(path, myprompt, (data) => {
-        console.log(data);
+    callLoad(path, (data) => {
+        document.getElementById("text-area-main").value = data;
+        saveTextArea();
     });
-}
-
-setInputChange("text-area-main", () => {save_text_area()});
-
-setClick("reformat", ()=>{
-    document.getElementById("text-area-main").value = document.getElementById("text-area-main").value.replace(/\./g, '.\r\n');
-    save_text_area();
 });
 
 setClick("generate", ()=>{
@@ -51,10 +42,28 @@ setClick("generate", ()=>{
         return;
     }
     console.log(path);
+
+    let prompt = document.getElementById("text-area-main").value;
+    if( prompt === "" ) {
+        alert("Please input a prompt.");
+        return;
+    }
+
+    let match = prompt.match(/{{(.*?)}}/);
+    if( match ) {
+        let get_path = match[1];
+        let get_prompt = localStorage.getItem(get_path);
+        prompt = prompt.replace(/{{(.*?)}}/, get_prompt);
+    }
+
+    let openai_api_key = document.getElementById("openai_api_key").value;
+    
+
+
     // https://kilianvalkhof.com/2010/css-html/css3-loading-spinners-without-images/
     // https://stephanwagner.me/only-css-loading-spinner
     $('#generate').addClass('spinner');
-    callGenerate(path, (data)=>{
+    callGenerate(path, prompt, openai_api_key, (data)=>{
         document.getElementById("text-area-main").value = data;
         $('#generate').removeClass('spinner');
     })

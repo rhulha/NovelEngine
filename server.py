@@ -4,8 +4,6 @@ from dotenv import dotenv_values
 from utils import load_json_from_file, save_text_to_file, load_text_from_file
 
 config = dotenv_values(".env")
-openai.api_key = config["API_KEY"]
-
 app = Flask(__name__)
 
 if not os.path.exists("data"):
@@ -34,38 +32,24 @@ def save(path):
         save_text_to_file(text, "data/" + path.replace("/", "_") + ".txt")
         return "success"
 
-# request.args.get('prompt')
-@app.route('/api/generate/<path:path>', methods=['GET', 'POST'])
+@app.route('/api/generate/<path:path>', methods=['POST'])
 def generate(path):
     path = path.replace("%20", " ")
-    load_file = True
-    if path == "Meta/Logline":
-        prompt = "Please generate a couple of loglines."
-        load_file = False
-    if path == "Meta/Elevator Pitch":
-        prompt_path = "Meta/Logline"
-        prompt = "Please generate an elevator pitch based on the following logline: "
 
-    if path == "Meta/Synopsis 800 words":
-        prompt_path = "Meta/Elevator Pitch"
-        prompt = "Please generate a Synopsis with between 600 and 800 words based on the following elevator pitch: "
+    data = request.json
 
-    if load_file:
-        filename = "data/" + prompt_path.replace("/", "_") + ".txt"
-        if not os.path.exists(filename):
-            return "This call to generate needs a higher level text to exist. This is not the case. Please go back and try again."
-        prompt = prompt + load_text_from_file(filename)
+    openai.api_key = data["openai_api_key"] #config["API_KEY"]
 
     response = openai.ChatCompletion.create(model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt},
+            {"role": "user", "content": data["prompt"]},
         ],
         temperature=0,
     )
     response_content = response['choices'][0]['message']['content']
-    save_filename = "data/" + path.replace("/", "_") + ".txt"
-    save_text_to_file(response_content, save_filename)
+    #save_filename = "data/" + path.replace("/", "_") + ".txt"
+    #save_text_to_file(response_content, save_filename)
     return response_content
 
 @app.route('/')

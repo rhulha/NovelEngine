@@ -1,6 +1,41 @@
-const textPlainHeaders = new Headers({
-    'Content-Type': 'text/plain',
-});
+const textPlainHeaders = new Headers({'Content-Type': 'text/plain'});
+const jsonHeaders = new Headers({"Content-Type": "application/json"});
+
+export let setClick=(id, callback)=>document.getElementById(id).addEventListener("click", callback);
+export let setInputChange = (id, callback) => document.getElementById(id).addEventListener("input", callback);
+
+export function setupTreeNodeClickEvent() {
+    $('#tree').on('select_node.jstree', function (e, data) {
+        let path = getSelectedTreePath();
+        console.log(  path );
+        let prompt = localStorage.getItem(path);
+        if( prompt === null ) {
+            callLoad(path, (data) => {
+                document.getElementById("text-area-main").value = data;
+                saveTextArea();
+            });
+        } else {
+            document.getElementById("text-area-main").value = prompt;
+        }
+    });
+}
+
+
+export function saveTextArea() {
+    var myprompt = document.getElementById("text-area-main").value;
+    let path = getSelectedTreePath();
+    if( path === "" ) {
+        alert("Please select a tree node.");
+        return;
+    }
+    console.log(path, myprompt);
+    /*
+    callSave(path, myprompt, (data) => {
+        console.log(data);
+    });
+    */
+    localStorage.setItem(path, myprompt);
+}
 
 export function getSelectedTreePath() {
     let instance = $('#tree').jstree();
@@ -85,11 +120,17 @@ export function callLoad(treePath, callback) {
 
 }
 
-export function callGenerate(treePath, callback) {
+export function callGenerate(treePath, prompt, openai_api_key, callback) {
+    const jsonData = {
+        openai_api_key: openai_api_key,
+        prompt: prompt,
+    };
+    const jsonStr = JSON.stringify(jsonData);
+
     const requestOptions = {
         method: 'POST',
-        headers: textPlainHeaders,
-        body: prompt,
+        headers: jsonHeaders,
+        body: jsonStr,
     };
 
     fetch('./api/generate/'+treePath, requestOptions)

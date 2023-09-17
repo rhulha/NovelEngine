@@ -1,0 +1,1 @@
+Generate a synopsis using around 800 words based on the following elevator pitch: {{Meta/Elevator Pitch}}
