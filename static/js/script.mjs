@@ -65,6 +65,7 @@ setClick("generate", ()=>{
     $('#generate').addClass('spinner');
     callGenerate(path, prompt, openai_api_key, (data)=>{
         document.getElementById("text-area-main").value = data;
+        saveTextArea();
         $('#generate').removeClass('spinner');
     })
 });
