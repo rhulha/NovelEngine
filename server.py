@@ -14,7 +14,7 @@ def get_items():
     tree_data = load_json_from_file("tree_data.json")
     return jsonify(tree_data)
 
-@app.route('/api/load/<path:path>', methods=['POST'])
+@app.route('/api/load/<path:path>', methods=['GET'])
 def load(path):
     if request.method == 'POST':
         # todo urldecode path
@@ -32,14 +32,10 @@ def save(path):
         save_text_to_file(text, "data/" + path.replace("/", "_") + ".txt")
         return "success"
 
-@app.route('/api/generate/<path:path>', methods=['POST'])
-def generate(path):
-    path = path.replace("%20", " ")
-
+@app.route('/api/generate', methods=['POST'])
+def generate():
     data = request.json
-
     openai.api_key = data["openai_api_key"] #config["API_KEY"]
-
     response = openai.ChatCompletion.create(model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},

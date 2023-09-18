@@ -1,1 +1,1 @@
-Generate a list of around 24 chapter outlines based on the following synopsis: {{Meta/Synopsis}}
+Generate a list of around 24 chapter outlines. Each chapter outline shall have a title and three to four sentences describing the plot of each chapter. Base the chapter outlines on the following synopsis: {{Meta/Synopsis}}

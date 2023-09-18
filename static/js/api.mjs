@@ -98,13 +98,7 @@ export function callSave(treePath, text, callback) {
 }
 
 export function callLoad(treePath, callback) {
-    const requestOptions = {
-        method: 'POST',
-        headers: textPlainHeaders,
-        body: prompt,
-    };
-
-    fetch('./api/load/'+treePath, requestOptions)
+    fetch('./api/load/'+treePath)
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
